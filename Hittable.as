@@ -1,5 +1,6 @@
 ﻿package {
 	public interface Hittable {
-		function getHit();
+		//returns true if it wants to be destroyed
+		function getHit():Boolean;
 	}
 }

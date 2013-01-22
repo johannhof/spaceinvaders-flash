@@ -7,13 +7,13 @@
 		public function Defender(speed:int) {
 			this._speed = speed;
 		}
-		public function getHit() {
-			this.parent.removeChild(this);
+		public function getHit():Boolean {
+			return true;
 		}
 		public function set speed(speed:int) {
 			this._speed = speed;
 		}
-		public function get speed():int{
+		public function get speed():int {
 			return _speed;
 		}
 		public function shoot():Projectile {

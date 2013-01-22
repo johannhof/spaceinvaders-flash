@@ -7,8 +7,15 @@
 		private var _def:Defender;
 		private var _defProjectile:Projectile;
 		private var projectiles:Array;
+		private var invaders:Array;
 
 		public function main() {
+			invaders = new Array();
+			var test:StandardInvader = new StandardInvader();
+			test.x = 100;
+			test.y = 200;
+			invaders.push(test);
+			invaders.forEach(addInvaders);
 			projectiles = new Array();
 			_def = new Defender(7);
 			_def.x = 250;
@@ -35,13 +42,36 @@
 				_defProjectile.move();
 				if (_defProjectile.y < 0) {
 					_defProjectile = null;
+				} else {
+					for each (var invader:Invader in invaders) {
+						if (checkHit(invader,_defProjectile) == true) {
+							if (_defProjectile.hit() == true) {
+								_defProjectile.parent.removeChild(_defProjectile);
+								_defProjectile = null;
+							}
+							if (invader.getHit() == true) {
+								invaders.splice(invaders.indexOf(invader),1);
+								invader.parent.removeChild(invader);
+							}
+						}
+					}
 				}
 			}
 			projectiles.forEach(moveProjectiles);
 		}
-		private function moveProjectiles(element:Projectile, index:int, arr:Array):void {
+		private function moveProjectiles(element:Projectile, index:int, arr:Array) {
 			element.move();
 		}
-
+		private function addInvaders(element:Invader, index:int, arr:Array) {
+			addChild(element);
+		}
+		private function checkHit(e:MovieClip,p:Projectile):Boolean {
+			if (e is Hittable) {
+				if (p.y < e.y && p.y > e.y - e.height && p.x - p.width < e.x + e.width && p.x + p.width > e.x) {
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 }
