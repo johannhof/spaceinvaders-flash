@@ -12,7 +12,7 @@
 			projectiles = new Array();
 			_def = new Defender(7);
 			_def.x = 250;
-			_def.y = 400;
+			_def.y = 420;
 			addChild(_def);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, clickHandler);
 			stage.addEventListener(Event.ENTER_FRAME,moveElements);
@@ -31,6 +31,12 @@
 			}
 		}
 		public function moveElements(e:Event) {
+			if (_defProjectile != null) {
+				_defProjectile.move();
+				if (_defProjectile.y < 0) {
+					_defProjectile = null;
+				}
+			}
 			projectiles.forEach(moveProjectiles);
 		}
 		private function moveProjectiles(element:Projectile, index:int, arr:Array):void {

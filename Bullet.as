@@ -2,7 +2,7 @@
 	public class Bullet extends Projectile {
 		
 		override public function move(){
-			this.y -= 20;
+			this.y -= 25;
 		}
 	}
 }
