@@ -6,25 +6,30 @@
 	public class main extends MovieClip {
 		private var _def:Defender;
 		private var _defProjectile:Projectile;
-		private var projectiles:Array;
-		private var invaders:Array;
+		private var _projectiles:Array;
+		private var _invaders:Array;
+		private var _level;
 
 		public function main() {
-			invaders = new Array();
-			var test:StandardInvader = new StandardInvader();
-			test.x = 100;
-			test.y = 200;
-			invaders.push(test);
-			invaders.forEach(addInvaders);
-			projectiles = new Array();
+			_level = new Level();
+			_invaders = _level.createInvaders();
+			addInvaders(_invaders);
+			_projectiles = new Array();
 			_def = new Defender(7);
 			_def.x = 250;
 			_def.y = 420;
 			addChild(_def);
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, clickHandler);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			stage.addEventListener(Event.ENTER_FRAME,moveElements);
 		}
-		public function clickHandler(e:KeyboardEvent) {
+		private function addInvaders(rows:Array) {
+			for each (var column:Array in rows) {
+				for each (var invader:Invader in column) {
+					addChild(invader);
+				}
+			}
+		}
+		public function keyDownHandler(e:KeyboardEvent) {
 			var key:uint = e.keyCode;
 			if (key == Keyboard.LEFT && _def.x > 50) {
 				_def.x -= _def.speed;
@@ -38,32 +43,33 @@
 			}
 		}
 		public function moveElements(e:Event) {
+			move_projectiles();
+		}
+		private function move_projectiles() {
 			if (_defProjectile != null) {
 				_defProjectile.move();
 				if (_defProjectile.y < 0) {
 					_defProjectile = null;
 				} else {
-					for each (var invader:Invader in invaders) {
-						if (checkHit(invader,_defProjectile) == true) {
-							if (_defProjectile.hit() == true) {
-								_defProjectile.parent.removeChild(_defProjectile);
-								_defProjectile = null;
-							}
-							if (invader.getHit() == true) {
-								invaders.splice(invaders.indexOf(invader),1);
-								invader.parent.removeChild(invader);
+					for each (var column:Array in _invaders) {
+						for each (var invader:Invader in column) {
+							if (checkHit(invader,_defProjectile) == true) {
+								if (_defProjectile.hit() == true) {
+									_defProjectile.parent.removeChild(_defProjectile);
+									_defProjectile = null;
+								}
+								if (invader.getHit() == true) {
+									_invaders.splice(_invaders.indexOf(invader),1);
+									invader.parent.removeChild(invader);
+								}
 							}
 						}
 					}
 				}
 			}
-			projectiles.forEach(moveProjectiles);
-		}
-		private function moveProjectiles(element:Projectile, index:int, arr:Array) {
-			element.move();
-		}
-		private function addInvaders(element:Invader, index:int, arr:Array) {
-			addChild(element);
+			for each (var projectile:Projectile in _projectiles) {
+				projectile.move();
+			}
 		}
 		private function checkHit(e:MovieClip,p:Projectile):Boolean {
 			if (e is Hittable) {
