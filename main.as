@@ -9,12 +9,17 @@
 		private var _projectiles:Array;
 		private var _invaders:Array;
 		private var _level;
+		private var _invaderSpeed;
+		private var _invaderSpeedSteps;
+		private var _invadersMoveRight:Boolean = true;
 
 		public function main() {
 			_level = new Level();
 			_invaders = _level.createInvaders();
-			addInvaders(_invaders);
+			addInvadersToStage(_invaders);
 			_projectiles = new Array();
+			_invaderSpeed = _level.startInvaderSpeed;
+			_invaderSpeedSteps = _level.invaderSpeedSteps;
 			_def = new Defender(7);
 			_def.x = 250;
 			_def.y = 420;
@@ -22,7 +27,7 @@
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			stage.addEventListener(Event.ENTER_FRAME,moveElements);
 		}
-		private function addInvaders(rows:Array) {
+		private function addInvadersToStage(rows:Array) {
 			for each (var column:Array in rows) {
 				for each (var invader:Invader in column) {
 					addChild(invader);
@@ -44,6 +49,30 @@
 		}
 		public function moveElements(e:Event) {
 			move_projectiles();
+			move_invaders();
+		}
+		private function move_invaders() {
+			for each (var column:Array in _invaders) {
+				for each (var invader:Invader in column) {
+					if ((invader.x > 450 && _invadersMoveRight) || (invader.x < 50 && !_invadersMoveRight)) {
+						_invadersMoveRight = !_invadersMoveRight;
+						jump_invaders();
+					}
+					if (_invadersMoveRight) {
+						invader.x += _invaderSpeed;
+					} else {
+						invader.x -= _invaderSpeed;
+					}
+				}
+			}
+			_invaderSpeed += _invaderSpeedSteps;
+		}
+		private function jump_invaders() {
+			for each (var column:Array in _invaders) {
+				for each (var invader:Invader in column) {
+					invader.y += 10; 
+				}
+			}
 		}
 		private function move_projectiles() {
 			if (_defProjectile != null) {
