@@ -5,7 +5,7 @@
 	import flash.ui.Keyboard;
 	public class main extends MovieClip {
 		private var _def:Defender;
-		private var _defProjectile:Projectile;
+		private var _defProjectiles:Array;
 		private var _projectiles:Array;
 		private var _invaders:Array;
 		private var _level;
@@ -18,8 +18,6 @@
 			_level = new Level();
 			_level.createInvaders();
 			_level.createDefender();
-			//var test:String = JSON.stringify(_level);
-			//trace(test);
 			_invaders = _level.invaders;
 			addInvadersToStage(_invaders);
 			_projectiles = new Array();
@@ -33,6 +31,14 @@
 			addChild(_def);
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			stage.addEventListener(Event.ENTER_FRAME,moveElements);
+			stage.addEventListener(Event.ENTER_FRAME,invaders_shoot);
+		}
+		private function invaders_shoot(){
+			for each (var column:Array in _invaders) {
+				for each (var invader:Invader in column) {
+					addChild(invader.shoot());	
+				}
+			}
 		}
 		private function addInvadersToStage(rows:Array) {
 			for each (var column:Array in rows) {
