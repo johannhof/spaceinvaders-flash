@@ -7,12 +7,6 @@
 		public var invaderVerticalStep = 10;
 		public function Level() {
 		}
-		public function createDefender():Defender {
-			defender = new Defender(7);
-			defender.x = 250;
-			defender.y = 420;
-			return defender;
-		}
 		public function createInvaders():Array {
 			var test:StandardInvader = new StandardInvader();
 			test.x = 100;
