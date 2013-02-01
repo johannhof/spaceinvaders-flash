@@ -29,7 +29,7 @@
 			_projectiles = new Array();
 			_invaderSpeed = _level.startInvaderSpeed;
 			var defender:Defender = new Defender(7);
-			defender.maxProjectiles = 3;
+			defender.maxProjectiles = 2;
 			defender.x = 250;
 			defender.y = 420;
 			_def = defender;
@@ -206,6 +206,26 @@
 			for each (var projectile:Projectile in _projectiles)
 			{
 				projectile.move();
+				if (projectile.y > 450)
+				{
+					projectile.parent.removeChild(projectile);
+					_projectiles.splice(_projectiles.indexOf(projectile),1);
+				}
+				else
+				{
+					if (checkHit(_def,projectile) == true)
+					{
+						if (projectile.hit() == true)
+						{
+							projectile.parent.removeChild(projectile);
+							_projectiles.splice(_projectiles.indexOf(projectile),1);
+						}
+						if (_def.getHit() == true)
+						{
+							_def.parent.removeChild(_def);
+						}
+					}
+				}
 			}
 		}
 		private function checkHit(e:MovieClip,p:Projectile):Boolean

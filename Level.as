@@ -7,7 +7,7 @@
 		public var startInvaderSpeed = 1;
 		public var invaderSpeedSteps = 0.01;
 		public var invaderVerticalStep = 10;
-		public var flyOverChance = 0.1;
+		public var flyOverChance = 0.05;
 
 		public function get flyOverInvaders():Array
 		{
