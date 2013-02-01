@@ -4,12 +4,13 @@
 
 	public class Defender extends MovieClip implements Hittable
 	{
-		private var _speed:int;
-		private var _maxProjectiles:int;
+		protected var _speed:int;
+		protected var _maxProjectiles:int;
 
-		public function Defender(speed:int)
+		public function Defender(speed:int = 7)
 		{
 			this._speed = speed;
+			this.maxProjectiles = 1;
 		}
 		public function getHit():Boolean
 		{

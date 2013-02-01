@@ -28,8 +28,7 @@
 			_defProjectiles = new Array();
 			_projectiles = new Array();
 			_invaderSpeed = _level.startInvaderSpeed;
-			var defender:Defender = new Defender(7);
-			defender.maxProjectiles = 2;
+			var defender:Defender = new Defender_II(7);
 			defender.x = 250;
 			defender.y = 420;
 			_def = defender;
