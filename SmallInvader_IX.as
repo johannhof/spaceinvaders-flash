@@ -1,6 +1,6 @@
 ﻿package  {
 	
-	public class SmallInvader_IX extends extends Invader {
+	public class SmallInvader_IX extends Invader {
 		
 		private var HP:int;
 		

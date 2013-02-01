@@ -11,7 +11,7 @@
 
 		public function get flyOverInvaders():Array
 		{
-			return new Array(new StandardInvader());
+			return new Array(new SmallInvader_V());
 		}
 
 		public function createInvaders():Array
