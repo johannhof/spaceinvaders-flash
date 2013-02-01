@@ -4,17 +4,17 @@
 	import flash.events.KeyboardEvent;
 	import flash.events.Event;
 	import flash.ui.Keyboard;
+
 	public class main extends MovieClip
 	{
 		private var _def:Defender;
 		private var _defProjectiles:Array;
 		private var _projectiles:Array;
 		private var _invaders:Array;
+		private var _flyOverInvaders:Array;
 		private var _level;
 		private var _invaderSpeed;
-		private var _invaderSpeedSteps;
 		private var _invadersMoveRight:Boolean = true;
-		private var _invaderVerticalStep;
 
 		public function main()
 		{
@@ -22,11 +22,10 @@
 			_level.createInvaders();
 			_invaders = _level.invaders;
 			addInvadersToStage(_invaders);
+			_flyOverInvaders = new Array();
 			_defProjectiles = new Array();
 			_projectiles = new Array();
 			_invaderSpeed = _level.startInvaderSpeed;
-			_invaderSpeedSteps = _level.invaderSpeedSteps;
-			_invaderVerticalStep = _level.invaderVerticalStep;
 			var defender:Defender = new Defender(7);
 			defender.maxProjectiles = 3;
 			defender.x = 250;
@@ -36,7 +35,21 @@
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			stage.addEventListener(Event.ENTER_FRAME,moveElements);
 			stage.addEventListener(Event.ENTER_FRAME,invaders_shoot);
+			stage.addEventListener(Event.ENTER_FRAME,addFlyOver);
 		}
+
+		private function addFlyOver(e:Event)
+		{
+			if (_level.flyOverChance > Math.random())
+			{
+				var invader:Invader = _level.flyOverInvaders[0];
+				invader.x = 0;
+				invader.y = 50;
+				_flyOverInvaders.push(invader);
+				addChild(invader);
+			}
+		}
+
 		private function invaders_shoot(e:Event)
 		{
 			for each (var column:Array in _invaders)
@@ -88,6 +101,15 @@
 		{
 			move_projectiles();
 			move_invaders();
+			move_flyOver();
+		}
+		private function move_flyOver()
+		{
+			for each (var invader:Invader in _flyOverInvaders)
+			{
+				invader.x +=  _invaderSpeed;
+			}
+
 		}
 		private function move_invaders()
 		{
@@ -110,7 +132,7 @@
 					}
 				}
 			}
-			_invaderSpeed +=  _invaderSpeedSteps;
+			_invaderSpeed +=  _level.invaderSpeedSteps;
 		}
 		private function jump_invaders()
 		{
@@ -118,7 +140,7 @@
 			{
 				for each (var invader:Invader in column)
 				{
-					invader.y +=  _invaderVerticalStep;
+					invader.y +=  _level.invaderVerticalStep;
 				}
 			}
 		}
@@ -153,7 +175,24 @@
 							}
 						}
 					}
+					for each (var flyInvader:Invader in _flyOverInvaders)
+					{
+						if (checkHit(flyInvader,def_projectile) == true)
+						{
+							if (def_projectile.hit() == true)
+							{
+								def_projectile.parent.removeChild(def_projectile);
+								_defProjectiles.splice(_defProjectiles.indexOf(def_projectile),1);
+							}
+							if (flyInvader.getHit() == true)
+							{
+								_flyOverInvaders.splice(_flyOverInvaders.indexOf(flyInvader),1);
+								flyInvader.parent.removeChild(flyInvader);
+							}
+						}
+					}
 				}
+
 			}
 			for each (var projectile:Projectile in _projectiles)
 			{
