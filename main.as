@@ -4,6 +4,8 @@
 	import flash.events.KeyboardEvent;
 	import flash.events.Event;
 	import flash.ui.Keyboard;
+	import flash.utils.Timer;
+	import flash.events.TimerEvent;
 
 	public class main extends MovieClip
 	{
@@ -32,10 +34,12 @@
 			defender.y = 420;
 			_def = defender;
 			addChild(_def);
+			var timer:Timer = new Timer(1000);
+			timer.addEventListener(TimerEvent.TIMER, invaders_shoot);
+			timer.addEventListener(TimerEvent.TIMER, addFlyOver);
+			timer.start();
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			stage.addEventListener(Event.ENTER_FRAME,moveElements);
-			stage.addEventListener(Event.ENTER_FRAME,invaders_shoot);
-			stage.addEventListener(Event.ENTER_FRAME,addFlyOver);
 		}
 
 		private function addFlyOver(e:Event)
@@ -146,9 +150,11 @@
 		}
 		private function move_projectiles()
 		{
+			//loop through defender projectiles, move and hit invaders
 			for each (var def_projectile:Projectile in _defProjectiles)
 			{
 				def_projectile.move();
+				//if projectile is out of the screen;
 				if (def_projectile.y < 0)
 				{
 					def_projectile.parent.removeChild(def_projectile);
@@ -156,6 +162,8 @@
 				}
 				else
 				{
+					//else try to hit something
+					//first try to hit each invader
 					for each (var column:Array in _invaders)
 					{
 						for each (var invader:Invader in column)
@@ -169,12 +177,13 @@
 								}
 								if (invader.getHit() == true)
 								{
-									_invaders.splice(_invaders.indexOf(invader),1);
+									column.splice(column.indexOf(invader),1);
 									invader.parent.removeChild(invader);
 								}
 							}
 						}
 					}
+					// now try to hit each invader flying over
 					for each (var flyInvader:Invader in _flyOverInvaders)
 					{
 						if (checkHit(flyInvader,def_projectile) == true)
@@ -203,7 +212,7 @@
 		{
 			if (e is Hittable)
 			{
-				if (p.y < e.y && p.y > e.y - e.height && p.x - p.width < e.x + e.width && p.x + p.width > e.x)
+				if (p.y <= e.y && p.y > e.y - e.height && p.x - p.width < e.x + e.width && p.x + p.width > e.x)
 				{
 					return true;
 				}
