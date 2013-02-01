@@ -1,13 +1,14 @@
-﻿package  {		
-	public class BlockInvader extends Invader {
+﻿package  {
+	public class SmallInvader_II extends Invader {
+		
 		
 		private var HP:int;
 		
-		public function BlockInvader() {
+		public function SmallInvader_II() {
 			HP = 2;
 		}
 		
-		public function getHit():Boolean{
+		override public function getHit():Boolean{
 			HP--;
 			if(HP == 0){
 				return true;
@@ -15,12 +16,12 @@
 			return false;
 		}
 		
-		public function shoot():Projectile{
+		override public function shoot():Projectile{
 			var proj = new Bullet();
 			proj.x = this.x;
 			proj.y = this.y;
 			return proj;
 		}
 	}
-	
+		
 }

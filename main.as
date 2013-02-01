@@ -18,8 +18,6 @@
 			_level = new Level();
 			_level.createInvaders();
 			_level.createDefender();
-			var test:String = JSON.stringify(_level);
-			trace(test);
 			_invaders = _level.invaders;
 			addInvadersToStage(_invaders);
 			_projectiles = new Array();
@@ -33,7 +31,7 @@
 		}
 		private function addInvadersToStage(rows:Array) {
 			for each (var column:Array in rows) {
-				for each (var invader:Invader in column) {
+				for each (var invader:Invader in column){
 					addChild(invader);
 				}
 			}
