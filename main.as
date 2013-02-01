@@ -1,9 +1,11 @@
-﻿package {
+﻿package 
+{
 	import flash.display.MovieClip;
 	import flash.events.KeyboardEvent;
 	import flash.events.Event;
 	import flash.ui.Keyboard;
-	public class main extends MovieClip {
+	public class main extends MovieClip
+	{
 		private var _def:Defender;
 		private var _defProjectiles:Array;
 		private var _projectiles:Array;
@@ -14,10 +16,10 @@
 		private var _invadersMoveRight:Boolean = true;
 		private var _invaderVerticalStep;
 
-		public function main() {
+		public function main()
+		{
 			_level = new Level();
 			_level.createInvaders();
-			_level.createDefender();
 			_invaders = _level.invaders;
 			addInvadersToStage(_invaders);
 			_defProjectiles = new Array();
@@ -26,6 +28,7 @@
 			_invaderSpeedSteps = _level.invaderSpeedSteps;
 			_invaderVerticalStep = _level.invaderVerticalStep;
 			var defender:Defender = new Defender(7);
+			defender.maxProjectiles = 3;
 			defender.x = 250;
 			defender.y = 420;
 			_def = defender;
@@ -34,32 +37,46 @@
 			stage.addEventListener(Event.ENTER_FRAME,moveElements);
 			stage.addEventListener(Event.ENTER_FRAME,invaders_shoot);
 		}
-		private function invaders_shoot(){
-			for each (var column:Array in _invaders) {
-				for each (var invader:Invader in column) {
+		private function invaders_shoot(e:Event)
+		{
+			for each (var column:Array in _invaders)
+			{
+				for each (var invader:Invader in column)
+				{
 					var p:Projectile = invader.shoot();
-					if(p != null){
-					addChild(p);	
-					_projectiles.push(p);
+					if (p != null)
+					{
+						addChild(p);
+						_projectiles.push(p);
 					}
 				}
 			}
 		}
-		private function addInvadersToStage(rows:Array) {
-			for each (var column:Array in rows) {
-				for each (var invader:Invader in column) {
+		private function addInvadersToStage(rows:Array)
+		{
+			for each (var column:Array in rows)
+			{
+				for each (var invader:Invader in column)
+				{
 					addChild(invader);
 				}
 			}
 		}
-		public function keyDownHandler(e:KeyboardEvent) {
+		public function keyDownHandler(e:KeyboardEvent)
+		{
 			var key:uint = e.keyCode;
-			if (key == Keyboard.LEFT && _def.x > 50) {
-				_def.x -= _def.speed;
-			} else if (key == Keyboard.RIGHT  && _def.x < stage.stageWidth - 50) {
-				_def.x += _def.speed;
-			} else if (key == Keyboard.SPACE) {
-				if (_defProjectiles.length < def.maxProjectiles) {
+			if (key == Keyboard.LEFT && _def.x > 50)
+			{
+				_def.x -=  _def.speed;
+			}
+			else if (key == Keyboard.RIGHT  && _def.x < stage.stageWidth - 50)
+			{
+				_def.x +=  _def.speed;
+			}
+			else if (key == Keyboard.SPACE)
+			{
+				if (_defProjectiles.length < _def.maxProjectiles)
+				{
 					var p:Projectile = _def.shoot();
 					_defProjectiles.push(p);
 					addChild(p);
@@ -67,47 +84,69 @@
 
 			}
 		}
-		public function moveElements(e:Event) {
+		public function moveElements(e:Event)
+		{
 			move_projectiles();
 			move_invaders();
 		}
-		private function move_invaders() {
-			for each (var column:Array in _invaders) {
-				for each (var invader:Invader in column) {
-					if (_invadersMoveRight) {
-						invader.x += _invaderSpeed;
-					} else {
-						invader.x -= _invaderSpeed;
+		private function move_invaders()
+		{
+			for each (var column:Array in _invaders)
+			{
+				for each (var invader:Invader in column)
+				{
+					if (_invadersMoveRight)
+					{
+						invader.x +=  _invaderSpeed;
 					}
-					if ((invader.x > 450 && _invadersMoveRight) || (invader.x < 50 && !_invadersMoveRight)) {
-						_invadersMoveRight = !_invadersMoveRight;
+					else
+					{
+						invader.x -=  _invaderSpeed;
+					}
+					if ((invader.x > 450 && _invadersMoveRight) || (invader.x < 50 && !_invadersMoveRight))
+					{
+						_invadersMoveRight = ! _invadersMoveRight;
 						jump_invaders();
 					}
 				}
 			}
-			_invaderSpeed += _invaderSpeedSteps;
+			_invaderSpeed +=  _invaderSpeedSteps;
 		}
-		private function jump_invaders() {
-			for each (var column:Array in _invaders) {
-				for each (var invader:Invader in column) {
-					invader.y += _invaderVerticalStep;
+		private function jump_invaders()
+		{
+			for each (var column:Array in _invaders)
+			{
+				for each (var invader:Invader in column)
+				{
+					invader.y +=  _invaderVerticalStep;
 				}
 			}
 		}
-		private function move_projectiles() {
-			if (_defProjectile != null) {
-				_defProjectile.move();
-				if (_defProjectile.y < 0) {
-					_defProjectile = null;
-				} else {
-					for each (var column:Array in _invaders) {
-						for each (var invader:Invader in column) {
-							if (checkHit(invader,_defProjectile) == true) {
-								if (_defProjectile.hit() == true) {
-									_defProjectile.parent.removeChild(_defProjectile);
-									_defProjectile = null;
+		private function move_projectiles()
+		{
+			for each (var def_projectile:Projectile in _defProjectiles)
+			{
+				def_projectile.move();
+				if (def_projectile.y < 0)
+				{
+					def_projectile.parent.removeChild(def_projectile);
+					_defProjectiles.splice(_defProjectiles.indexOf(def_projectile),1);
+				}
+				else
+				{
+					for each (var column:Array in _invaders)
+					{
+						for each (var invader:Invader in column)
+						{
+							if (checkHit(invader,def_projectile) == true)
+							{
+								if (def_projectile.hit() == true)
+								{
+									def_projectile.parent.removeChild(def_projectile);
+									_defProjectiles.splice(_defProjectiles.indexOf(def_projectile),1);
 								}
-								if (invader.getHit() == true) {
+								if (invader.getHit() == true)
+								{
 									_invaders.splice(_invaders.indexOf(invader),1);
 									invader.parent.removeChild(invader);
 								}
@@ -116,13 +155,17 @@
 					}
 				}
 			}
-			for each (var projectile:Projectile in _projectiles) {
+			for each (var projectile:Projectile in _projectiles)
+			{
 				projectile.move();
 			}
 		}
-		private function checkHit(e:MovieClip,p:Projectile):Boolean {
-			if (e is Hittable) {
-				if (p.y < e.y && p.y > e.y - e.height && p.x - p.width < e.x + e.width && p.x + p.width > e.x) {
+		private function checkHit(e:MovieClip,p:Projectile):Boolean
+		{
+			if (e is Hittable)
+			{
+				if (p.y < e.y && p.y > e.y - e.height && p.x - p.width < e.x + e.width && p.x + p.width > e.x)
+				{
 					return true;
 				}
 			}
