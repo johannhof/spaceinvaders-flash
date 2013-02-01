@@ -4,7 +4,7 @@
 		private var HP:int;
 		
 		public function SmallInvader_I() {
-			HP = 2;
+			HP = 1;
 		}
 		
 		override public function getHit():Boolean{
@@ -16,10 +16,10 @@
 		}
 		
 		override public function shoot():Projectile{
-			var proj = new Bullet();
-			proj.x = this.x;
-			proj.y = this.y;
-			return proj;
+			var invaderbullet = new Invader_Bullet();
+			invaderbullet.x = this.x;
+			invaderbullet.y = this.y;
+			return invaderbullet;
 		}
 	}
 	

@@ -1,10 +1,11 @@
 ﻿package  {
-	public class SmallInvader_II extends Invader {
+	
+	public class SmallInvader_VIII extends Invader {
 		
 		private var HP:int;
 		
-		public function SmallInvader_II() {
-			HP = 1;
+		public function SmallInvader_VIII() {
+			HP = 2;
 		}
 		
 		override public function getHit():Boolean{
@@ -22,5 +23,5 @@
 			return invaderbullet;
 		}
 	}
-		
+	
 }

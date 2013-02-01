@@ -1,10 +1,11 @@
 ﻿package  {
-	public class SmallInvader_II extends Invader {
+	
+	public class SmallInvader_VII extends Invader {
 		
 		private var HP:int;
 		
-		public function SmallInvader_II() {
-			HP = 1;
+		public function SmallInvader_VII() {
+			HP = 2;
 		}
 		
 		override public function getHit():Boolean{
@@ -16,11 +17,11 @@
 		}
 		
 		override public function shoot():Projectile{
-			var invaderbullet = new Invader_Bullet_BLUE();
+			var invaderbullet = new Invader_Bullet();
 			invaderbullet.x = this.x;
 			invaderbullet.y = this.y;
 			return invaderbullet;
 		}
 	}
-		
+	
 }
