@@ -20,6 +20,7 @@
 			_level.createDefender();
 			_invaders = _level.invaders;
 			addInvadersToStage(_invaders);
+			_defProjectiles = new Array();
 			_projectiles = new Array();
 			_invaderSpeed = _level.startInvaderSpeed;
 			_invaderSpeedSteps = _level.invaderSpeedSteps;
@@ -36,7 +37,11 @@
 		private function invaders_shoot(){
 			for each (var column:Array in _invaders) {
 				for each (var invader:Invader in column) {
-					addChild(invader.shoot());	
+					var p:Projectile = invader.shoot();
+					if(p != null){
+					addChild(p);	
+					_projectiles.push(p);
+					}
 				}
 			}
 		}
@@ -54,10 +59,12 @@
 			} else if (key == Keyboard.RIGHT  && _def.x < stage.stageWidth - 50) {
 				_def.x += _def.speed;
 			} else if (key == Keyboard.SPACE) {
-				if (_defProjectile == null) {
-					_defProjectile = _def.shoot();
-					addChild(_defProjectile);
+				if (_defProjectiles.length < def.maxProjectiles) {
+					var p:Projectile = _def.shoot();
+					_defProjectiles.push(p);
+					addChild(p);
 				}
+
 			}
 		}
 		public function moveElements(e:Event) {
