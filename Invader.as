@@ -7,5 +7,9 @@
 		public function getHit():Boolean {
 			return true;
 		}
+		
+		public function shoot():Projectile{
+			return null;
+		}
 	}
 }
