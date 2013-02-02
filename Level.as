@@ -27,9 +27,12 @@
 					invaders[column].push(test);
 				}
 			}
-			var test2:SmallInvader_I = new SmallInvader_I();
-			test2.x = 200;
-			test2.y = 200;
+			var test2:SmallInvader_V = new SmallInvader_V();
+			var test2column = 2;
+			var test2row = 1;
+			test2.x = test2column * 50 + 100;
+			test2.y = test2row * 50 + 100;
+			invaders[test2column][test2row] = test2;
 			return invaders;
 		}
 	}

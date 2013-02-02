@@ -17,9 +17,11 @@
 		private var _level;
 		private var _invaderSpeed;
 		private var _invadersMoveRight:Boolean = true;
+		private var _barriers:Array;
 
 		public function main()
 		{
+			_barriers = new Array(new Barrier(), new Barrier());
 			_level = new Level();
 			_invaders = _level.createInvaders();;
 			addInvadersToStage(_invaders);
@@ -56,13 +58,14 @@
 		{
 			for each (var column:Array in _invaders)
 			{
-				if(Math.random() < column[column.length - 1].shootingChance){
-				var p:Projectile = column[column.length - 1].shoot();
-				if (p != null)
+				if (Math.random() < column[column.length - 1].shootingChance)
 				{
-					addChild(p);
-					_projectiles.push(p);
-				}
+					var p:Projectile = column[column.length - 1].shoot();
+					if (p != null)
+					{
+						addChild(p);
+						_projectiles.push(p);
+					}
 				}
 			}
 		}
@@ -145,6 +148,69 @@
 				}
 			}
 		}
+		private function check_barrier_hit(projectile:Projectile)
+		{
+			for each (var barrier:Barrier in _barriers)
+			{
+				for each (var element:BarrierElement in barrier.elements)
+				{
+					if (checkHit(element,projectile))
+					{
+						if (projectile.hit())
+						{
+							projectile.parent.removeChild(projectile);
+							_defProjectiles.splice(_defProjectiles.indexOf(projectile),1);
+						}
+						if (element.getHit())
+						{
+							barrier.elements.splice(barrier.elements.indexOf(element),1);
+							element.parent.removeChild(element);
+						}
+					}
+				}
+			}
+		}
+
+		private function check_invader_hit(projectile:Projectile)
+		{
+			for each (var column:Array in _invaders)
+			{
+				for each (var invader:Invader in column)
+				{
+					if (checkHit(invader,projectile))
+					{
+						if (projectile.hit())
+						{
+							projectile.parent.removeChild(projectile);
+							_defProjectiles.splice(_defProjectiles.indexOf(projectile),1);
+						}
+						if (invader.getHit())
+						{
+							column.splice(column.indexOf(invader),1);
+							invader.parent.removeChild(invader);
+						}
+					}
+				}
+			}
+			// now try to hit each invader flying over
+			for each (var flyInvader:Invader in _flyOverInvaders)
+			{
+				if (checkHit(flyInvader,projectile))
+				{
+					if (projectile.hit())
+					{
+						projectile.parent.removeChild(projectile);
+						_defProjectiles.splice(_defProjectiles.indexOf(projectile),1);
+					}
+					if (flyInvader.getHit())
+					{
+						_flyOverInvaders.splice(_flyOverInvaders.indexOf(flyInvader),1);
+						flyInvader.parent.removeChild(flyInvader);
+					}
+				}
+			}
+		}
+
 		private function move_projectiles()
 		{
 			//loop through defender projectiles, move and hit invaders
@@ -160,43 +226,8 @@
 				else
 				{
 					//else try to hit something
-					//first try to hit each invader
-					for each (var column:Array in _invaders)
-					{
-						for each (var invader:Invader in column)
-						{
-							if (checkHit(invader,def_projectile) == true)
-							{
-								if (def_projectile.hit() == true)
-								{
-									def_projectile.parent.removeChild(def_projectile);
-									_defProjectiles.splice(_defProjectiles.indexOf(def_projectile),1);
-								}
-								if (invader.getHit() == true)
-								{
-									column.splice(column.indexOf(invader),1);
-									invader.parent.removeChild(invader);
-								}
-							}
-						}
-					}
-					// now try to hit each invader flying over
-					for each (var flyInvader:Invader in _flyOverInvaders)
-					{
-						if (checkHit(flyInvader,def_projectile) == true)
-						{
-							if (def_projectile.hit() == true)
-							{
-								def_projectile.parent.removeChild(def_projectile);
-								_defProjectiles.splice(_defProjectiles.indexOf(def_projectile),1);
-							}
-							if (flyInvader.getHit() == true)
-							{
-								_flyOverInvaders.splice(_flyOverInvaders.indexOf(flyInvader),1);
-								flyInvader.parent.removeChild(flyInvader);
-							}
-						}
-					}
+					check_barrier_hit(def_projectile);
+					check_invader_hit(def_projectile);
 				}
 
 			}
@@ -210,14 +241,14 @@
 				}
 				else
 				{
-					if (checkHit(_def,projectile) == true)
+					if (checkHit(_def,projectile))
 					{
-						if (projectile.hit() == true)
+						if (projectile.hit())
 						{
 							projectile.parent.removeChild(projectile);
 							_projectiles.splice(_projectiles.indexOf(projectile),1);
 						}
-						if (_def.getHit() == true)
+						if (_def.getHit())
 						{
 							_def.parent.removeChild(_def);
 						}
