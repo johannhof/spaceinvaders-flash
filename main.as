@@ -21,16 +21,16 @@
 
 		public function main()
 		{
-			_barriers = new Array(new Barrier());
+			_barriers = new Array(new Barrier(75), new Barrier(175),new Barrier(275));
 			addBarriers();
-			_level = new Level();
+			_level = new Level_1();
 			_invaders = _level.createInvaders();;
 			addInvadersToStage(_invaders);
 			_flyOverInvaders = new Array();
 			_defProjectiles = new Array();
 			_projectiles = new Array();
 			_invaderSpeed = _level.startInvaderSpeed;
-			var defender:Defender = new Defender_II(7);
+			var defender:Defender = new Defender(7);
 			defender.x = 250;
 			defender.y = 420;
 			_def = defender;
@@ -228,9 +228,10 @@
 		private function move_projectiles()
 		{
 			//loop through defender projectiles, move and hit invaders
+			for(var i = 0; i < 12; i++)
+			{
 			for each (var def_projectile:Projectile in _defProjectiles)
 			{
-				for(var i = 0; i < 12; i++){;
 				def_projectile.move();
 				//if projectile is out of the screen;
 				if (def_projectile.y < 0)
@@ -244,24 +245,27 @@
 					check_barrier_hit(def_projectile,_defProjectiles);
 					check_invader_hit(def_projectile,_defProjectiles);
 				}
+
 			}
-		}
-		for each (var projectile:Projectile in _projectiles)
-		{
-			projectile.move();
-			if (projectile.y > 450)
+			for each (var projectile:Projectile in _projectiles)
 			{
-				projectile.parent.removeChild(projectile);
-				_projectiles.splice(_projectiles.indexOf(projectile),1);
-			}
-			else
-			{
-				if (checkHit(_def,projectile))
+				projectile.move();
+				if (projectile.y > 450)
 				{
-					hitProjectile(projectile,_projectiles);
-					if (_def.getHit())
+					projectile.parent.removeChild(projectile);
+					_projectiles.splice(_projectiles.indexOf(projectile),1);
+				}
+				else
+				{
+										check_barrier_hit(projectile,_projectiles);
+
+					if (checkHit(_def,projectile))
 					{
-						_def.parent.removeChild(_def);
+						hitProjectile(projectile,_projectiles);
+						if (_def.getHit())
+						{
+							_def.parent.removeChild(_def);
+						}
 					}
 				}
 			}

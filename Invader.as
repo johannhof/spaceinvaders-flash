@@ -1,7 +1,7 @@
 ﻿package {
 	import flash.display.MovieClip;
 	public class Invader extends MovieClip implements Hittable {
-		protected var _shootingChance = 0.05;
+		protected var _shootingChance = 0.5;
 		
 		public function Invader() {
 

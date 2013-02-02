@@ -3,21 +3,19 @@
 
 	public class Level_1 extends Level
 	{
-		public function Level_1() {
-			// constructor code
+		public function Level_1(){
+			startInvaderSpeed = 1;
+			invaderSpeedSteps = 0.01;
+			invaderVerticalStep = 10;
+			flyOverChance = 0.05;
 		}
-		overwrite public var defender:Defender;
-		overwrite public var startInvaderSpeed = 1;
-		overwrite public var invaderSpeedSteps = 0.01;
-		overwrite public var invaderVerticalStep = 10;
-		overwrite public var flyOverChance = 0.05;
-
-		overwrite public function get flyOverInvaders():Array
+		
+		override public function get flyOverInvaders():Array
 		{
 			return new Array(new SmallInvader_IV());
 		}
 
-		overwrite public function createInvaders():Array
+		override public function createInvaders():Array
 		{
 			var invaders:Array = new Array();
 			for (var column = 0; column < 6; column++)
