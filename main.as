@@ -21,8 +21,7 @@
 		public function main()
 		{
 			_level = new Level();
-			_level.createInvaders();
-			_invaders = _level.invaders;
+			_invaders = _level.createInvaders();;
 			addInvadersToStage(_invaders);
 			_flyOverInvaders = new Array();
 			_defProjectiles = new Array();
@@ -57,14 +56,13 @@
 		{
 			for each (var column:Array in _invaders)
 			{
-				for each (var invader:Invader in column)
+				if(Math.random() < column[column.length - 1].shootingChance){
+				var p:Projectile = column[column.length - 1].shoot();
+				if (p != null)
 				{
-					var p:Projectile = invader.shoot();
-					if (p != null)
-					{
-						addChild(p);
-						_projectiles.push(p);
-					}
+					addChild(p);
+					_projectiles.push(p);
+				}
 				}
 			}
 		}
