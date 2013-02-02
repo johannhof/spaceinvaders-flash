@@ -5,7 +5,7 @@
 		public function Defender_II(speed:int = 7)
 		{
 			this._speed = speed;
-			this.maxProjectiles = 3;
+			this.maxProjectiles = 2;
 		}
 
 		override public function shoot():Projectile

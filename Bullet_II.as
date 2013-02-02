@@ -1,13 +1,12 @@
 ﻿package  {
 	
-		public class Bullet_II extends Projectile {
-		
-		override public function move(){
-			this.y -= 25;
-		}
-		
-		override public function hit():Boolean{
-			return true;
+		public class Bullet_II extends Bullet {
+				
+		override public function hit():Projectile{
+			var b:Bullet = new Bullet();
+			b.x = this.x;
+			b.y = this.y;
+			return b;
 		}
 	}
 	
