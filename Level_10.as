@@ -45,14 +45,14 @@
 			var test6:SmallInvader_IV = new SmallInvader_IV();
 			var test6column = 0;
 			var test6row = 3;
-			test6.x = test6column * 50 + 100;
+			test6.x = test6column * 50 + 90;
 			test6.y = test6row * 50 + 100;
 			invaders[test6column][test6row] = test6;
 
 			var test7:SmallInvader_V = new SmallInvader_V();
 			var test7column = 1;
 			var test7row = 3;
-			test7.x = test7column * 50 + 100;
+			test7.x = test7column * 50 + 95;
 			test7.y = test7row * 50 + 100;
 			invaders[test7column][test7row] = test7;
 			
@@ -80,21 +80,21 @@
 			var test8:BigInvader_I = new BigInvader_I();
 			var test8column = 1;
 			var test8row = 0;
-			test8.x = test8column * 50 + 100;
+			test8.x = test8column * 50 + 85;
 			test8.y = test8row * 50 + 100;
 			invaders[test8column][test8row] = test8;
 
 			var test9:BigInvader_II = new BigInvader_II();
 			var test9column = 1;
 			var test9row = 1;
-			test9.x = test9column * 50 + 100;
+			test9.x = test9column * 50 + 85;
 			test9.y = test9row * 50 + 100;
 			invaders[test9column][test9row] = test9;
 
 			var test11:BigInvader_III = new BigInvader_III();
 			var test11column = 1;
 			var test11row = 2;
-			test11.x = test11column * 50 + 100;
+			test11.x = test11column * 50 + 80;
 			test11.y = test11row * 50 + 100;
 			invaders[test11column][test11row] = test11;
 
