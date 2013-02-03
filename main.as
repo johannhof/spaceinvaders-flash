@@ -7,6 +7,7 @@
 	import flash.ui.Keyboard;
 	import flash.utils.Timer;
 	import flash.events.TimerEvent;
+	import flash.display.Sprite;
 
 	public class main extends MovieClip
 	{
@@ -20,6 +21,7 @@
 		private var _invadersMoveRight:Boolean = true;
 		private var _barriers:Array;
 		private var _timer:Timer;
+		private var _defLifeSymbols:Sprite;
 
 		public function main()
 		{
@@ -44,26 +46,37 @@
 		{
 			time.text = _timer.currentCount.toString();
 		}
-		
-		private function setup_defender(){
+
+		private function setup_defender()
+		{
 			_def = new Defender(10);
 			_def.x = 250;
 			_def.y = 450;
 			addChild(_def);
-			for(var i = 0; i < _def.lifes; i++){
-				var temp:Defender = new Defender();
-				temp.x = i * 50 + 50;
-				temp.y = 500;
-				addChild(temp);
-			}
+			update_lifes();
 		}
-		
-		private function setup_barriers(){
+
+		private function update_lifes()
+		{
+			_defLifeSymbols = new Sprite();
+			for (var i = 0; i < _def.lifes; i++)
+			{
+				var temp:Defender_Model = new Defender_Model();
+				temp.x = i * 50 + 25;
+				temp.y = 490;
+				_defLifeSymbols.addChild(temp);
+			}
+			addChild(_defLifeSymbols);
+		}
+
+		private function setup_barriers()
+		{
 			_barriers = new Array(new Barrier(75),new Barrier(230),new Barrier(380));
 			addBarriers();
 		}
-		
-		private function setup_timer(){
+
+		private function setup_timer()
+		{
 			_timer = new Timer(1000);
 			_timer.addEventListener(TimerEvent.TIMER, tick);
 			_timer.addEventListener(TimerEvent.TIMER, invaders_shoot);
@@ -73,7 +86,7 @@
 
 		private function setup_level()
 		{
-			_level = new Level_10();
+			_level = new Level_2();
 			_invaderSpeed = _level.startInvaderSpeed;
 			_invaders = _level.createInvaders();
 			_flyOverInvaders = new Array();
@@ -276,46 +289,51 @@
 
 		private function move_projectiles()
 		{
-			for(var i = 0; i < 12; i++)
+		for(var i = 0; i < 12; i++)
+		{
+			for each (var def_projectile:Projectile in _defProjectiles)
 			{
-				for each (var def_projectile:Projectile in _defProjectiles)
+				def_projectile.move();
+				//if projectile is out of the screen;
+				if (def_projectile.y < 0)
 				{
-					def_projectile.move();
-					//if projectile is out of the screen;
-					if (def_projectile.y < 0)
-					{
-						def_projectile.parent.removeChild(def_projectile);
-						_defProjectiles.splice(_defProjectiles.indexOf(def_projectile),1);
-					}
-					else
-					{
-						//else try to hit something
-						if (! check_barrier_hit(def_projectile,_defProjectiles))
-						{
-							check_invader_hit(def_projectile,_defProjectiles);
-						}
-					}
-
+					def_projectile.parent.removeChild(def_projectile);
+					_defProjectiles.splice(_defProjectiles.indexOf(def_projectile),1);
 				}
-				// now loop through invader projectiles
-				for each (var projectile:Projectile in _projectiles)
+				else
 				{
-					projectile.move();
-					if (projectile.y > 450)
+					//else try to hit something
+					if (! check_barrier_hit(def_projectile,_defProjectiles))
 					{
-						projectile.parent.removeChild(projectile);
-						_projectiles.splice(_projectiles.indexOf(projectile),1);
+						check_invader_hit(def_projectile,_defProjectiles);
 					}
-					else
+				}
+
+			}
+			// now loop through invader projectiles
+			for each (var projectile:Projectile in _projectiles)
+			{
+				projectile.move();
+				if (projectile.y > 450)
+				{
+					projectile.parent.removeChild(projectile);
+					_projectiles.splice(_projectiles.indexOf(projectile),1);
+				}
+				else
+				{
+					if (! check_barrier_hit(projectile,_projectiles))
 					{
-						if (! check_barrier_hit(projectile,_projectiles))
+						if (checkHit(_def,projectile))
 						{
-							if (checkHit(_def,projectile))
+							hitProjectile(projectile,_projectiles);
+							if (_def.getHit())
 							{
-								hitProjectile(projectile,_projectiles);
-								if (_def.getHit())
+								removeChild(_defLifeSymbols);
+								update_lifes();
+								if (_def.lifes <= 0)
 								{
 									_def.parent.removeChild(_def);
+									gotoAndStop('gameover');
 								}
 							}
 						}
@@ -323,16 +341,17 @@
 				}
 			}
 		}
-		private function checkHit(e:MovieClip,p:Projectile):Boolean
+	};
+	private function checkHit(e:MovieClip,p:Projectile):Boolean
+	{
+		if (e is Hittable)
 		{
-			if (e is Hittable)
+			if (p.y <= e.y && p.y > e.y - e.height && p.x - p.width < e.x + e.width && p.x + p.width > e.x)
 			{
-				if (p.y <= e.y && p.y > e.y - e.height && p.x - p.width < e.x + e.width && p.x + p.width > e.x)
-				{
-					return true;
-				}
+				return true;
 			}
-			return false;
 		}
+		return false;
 	}
+}
 }

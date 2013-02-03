@@ -11,11 +11,12 @@
 		public function Defender(speed:int = 7)
 		{
 			this._speed = speed;
-			this._lifes = 3;
+			this._lifes = 2;
 			this.maxProjectiles = 1;
 		}
 		public function getHit():Boolean
 		{
+			_lifes--;
 			return true;
 		}
 
