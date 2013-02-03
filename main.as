@@ -19,34 +19,72 @@
 		private var _invaderSpeed;
 		private var _invadersMoveRight:Boolean = true;
 		private var _barriers:Array;
+		private var _timer:Timer;
 
-		public function main(){
+		public function main()
+		{
 			playButton.addEventListener(MouseEvent.CLICK, function(e:Event){
-										gotoAndPlay('gamestart');
+			gotoAndPlay('gamestart');
 			});
 		}
-	
+
 		public function init()
 		{
-			_barriers = new Array(new Barrier(75),new Barrier(230),new Barrier(380));
-			addBarriers();
-			_level = new Level_1();
-			_invaders = _level.createInvaders();;
-			addInvadersToStage(_invaders);
-			_flyOverInvaders = new Array();
+			setup_level();
+			setup_barriers();
+			setup_timer();
+			setup_defender();
 			_defProjectiles = new Array();
 			_projectiles = new Array();
-			_invaderSpeed = _level.startInvaderSpeed;
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
+			stage.addEventListener(Event.ENTER_FRAME,moveElements);
+		}
+
+		private function tick(e:Event)
+		{
+			time.text = _timer.currentCount.toString();
+		}
+		
+		private function setup_defender(){
 			_def = new Defender(10);
 			_def.x = 250;
 			_def.y = 450;
 			addChild(_def);
-			var timer:Timer = new Timer(1000);
-			timer.addEventListener(TimerEvent.TIMER, invaders_shoot);
-			timer.addEventListener(TimerEvent.TIMER, addFlyOver);
-			timer.start();
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
-			stage.addEventListener(Event.ENTER_FRAME,moveElements);
+			for(var i = 0; i < _def.lifes; i++){
+				var temp:Defender = new Defender();
+				temp.x = i * 50 + 50;
+				temp.y = 500;
+				addChild(temp);
+			}
+		}
+		
+		private function setup_barriers(){
+			_barriers = new Array(new Barrier(75),new Barrier(230),new Barrier(380));
+			addBarriers();
+		}
+		
+		private function setup_timer(){
+			_timer = new Timer(1000);
+			_timer.addEventListener(TimerEvent.TIMER, tick);
+			_timer.addEventListener(TimerEvent.TIMER, invaders_shoot);
+			_timer.addEventListener(TimerEvent.TIMER, addFlyOver);
+			_timer.start();
+		}
+
+		private function setup_level()
+		{
+			_level = new Level_1();
+			_invaderSpeed = _level.startInvaderSpeed;
+			_invaders = _level.createInvaders();
+			_flyOverInvaders = new Array();
+			for each (var column:Array in _invaders)
+			{
+				for each (var invader:Invader in column)
+				{
+					addChild(invader);
+				}
+			}
+
 		}
 
 		private function addBarriers()
@@ -81,16 +119,6 @@
 						addChild(p);
 						_projectiles.push(p);
 					}
-				}
-			}
-		}
-		private function addInvadersToStage(rows:Array)
-		{
-			for each (var column:Array in rows)
-			{
-				for each (var invader:Invader in column)
-				{
-					addChild(invader);
 				}
 			}
 		}
@@ -155,7 +183,7 @@
 					_invadersMoveRight = ! _invadersMoveRight;
 					jump_invaders();
 				}
-				
+
 
 			}
 			_invaderSpeed +=  _level.invaderSpeedSteps;

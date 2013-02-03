@@ -6,10 +6,12 @@
 	{
 		protected var _speed:int;
 		protected var _maxProjectiles:int;
+		protected var _lifes;
 
 		public function Defender(speed:int = 7)
 		{
 			this._speed = speed;
+			this._lifes = 3;
 			this.maxProjectiles = 1;
 		}
 		public function getHit():Boolean
@@ -25,6 +27,10 @@
 		public function set maxProjectiles(max:int)
 		{
 			this._maxProjectiles = max;
+		}
+		
+		public function get lifes():int{
+			return _lifes;
 		}
 
 		public function set speed(speed:int)
