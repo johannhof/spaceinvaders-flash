@@ -38,8 +38,8 @@
 		public function shoot():Projectile
 		{
 			var bullet:Bullet =  new Bullet();
-			bullet.x = this.x;
-			bullet.y = this.y - 20;
+			bullet.x = this.x + this.width / 2;
+			bullet.y = this.y - this.height;
 			return bullet;
 		}
 	}

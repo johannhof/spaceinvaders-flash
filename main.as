@@ -21,7 +21,7 @@
 
 		public function main()
 		{
-			_barriers = new Array(new Barrier(75), new Barrier(175),new Barrier(275));
+			_barriers = new Array(new Barrier(75),new Barrier(212),new Barrier(350));
 			addBarriers();
 			_level = new Level_1();
 			_invaders = _level.createInvaders();;
@@ -30,10 +30,9 @@
 			_defProjectiles = new Array();
 			_projectiles = new Array();
 			_invaderSpeed = _level.startInvaderSpeed;
-			var defender:Defender = new Defender(7);
-			defender.x = 250;
-			defender.y = 420;
-			_def = defender;
+			_def = new Defender(7);
+			_def.x = 250;
+			_def.y = 450;
 			addChild(_def);
 			var timer:Timer = new Timer(1000);
 			timer.addEventListener(TimerEvent.TIMER, invaders_shoot);
@@ -157,7 +156,7 @@
 				}
 			}
 		}
-		private function check_barrier_hit(projectile:Projectile, container:Array)
+		private function check_barrier_hit(projectile:Projectile, container:Array):Boolean
 		{
 			for each (var barrier:Barrier in _barriers)
 			{
@@ -171,12 +170,14 @@
 							barrier.elements.splice(barrier.elements.indexOf(element),1);
 							barrier.removeChild(element);
 						}
+						return true;
 					}
 				}
 			}
+			return false;
 		}
 
-		private function check_invader_hit(projectile:Projectile,container:Array)
+		private function check_invader_hit(projectile:Projectile,container:Array):Boolean
 		{
 			for each (var column:Array in _invaders)
 			{
@@ -190,6 +191,7 @@
 							column.splice(column.indexOf(invader),1);
 							invader.parent.removeChild(invader);
 						}
+						return true;
 					}
 				}
 			}
@@ -204,83 +206,89 @@
 						_flyOverInvaders.splice(_flyOverInvaders.indexOf(flyInvader),1);
 						flyInvader.parent.removeChild(flyInvader);
 					}
+					return true;
 				}
 			}
+			return true;
 		}
 
 		private function hitProjectile(projectile:Projectile, container:Array)
 		{
-			var p:Projectile = projectile.hit();
-			if (p == null)
+			if (projectile != null)
 			{
-				projectile.parent.removeChild(projectile);
-				container.splice(container.indexOf(projectile),1);
-			}
-			else
-			{
-				projectile.parent.removeChild(projectile);
-				container.splice(container.indexOf(projectile),1);
-				addChild(p);
-				container.push(p);
+				var p:Projectile = projectile.hit();
+				if (p == null)
+				{
+					container.splice(container.indexOf(projectile),1);
+					projectile.parent.removeChild(projectile);
+				}
+				else
+				{
+					projectile.parent.removeChild(projectile);
+					container.splice(container.indexOf(projectile),1);
+					addChild(p);
+					container.push(p);
+				}
 			}
 		}
 
 		private function move_projectiles()
 		{
-			//loop through defender projectiles, move and hit invaders
 			for(var i = 0; i < 12; i++)
 			{
-			for each (var def_projectile:Projectile in _defProjectiles)
-			{
-				def_projectile.move();
-				//if projectile is out of the screen;
-				if (def_projectile.y < 0)
+				for each (var def_projectile:Projectile in _defProjectiles)
 				{
-					def_projectile.parent.removeChild(def_projectile);
-					_defProjectiles.splice(_defProjectiles.indexOf(def_projectile),1);
-				}
-				else
-				{
-					//else try to hit something
-					check_barrier_hit(def_projectile,_defProjectiles);
-					check_invader_hit(def_projectile,_defProjectiles);
-				}
-
-			}
-			for each (var projectile:Projectile in _projectiles)
-			{
-				projectile.move();
-				if (projectile.y > 450)
-				{
-					projectile.parent.removeChild(projectile);
-					_projectiles.splice(_projectiles.indexOf(projectile),1);
-				}
-				else
-				{
-										check_barrier_hit(projectile,_projectiles);
-
-					if (checkHit(_def,projectile))
+					def_projectile.move();
+					//if projectile is out of the screen;
+					if (def_projectile.y < 0)
 					{
-						hitProjectile(projectile,_projectiles);
-						if (_def.getHit())
+						def_projectile.parent.removeChild(def_projectile);
+						_defProjectiles.splice(_defProjectiles.indexOf(def_projectile),1);
+					}
+					else
+					{
+						//else try to hit something
+						if(!check_barrier_hit(def_projectile,_defProjectiles)){
+						check_invader_hit(def_projectile,_defProjectiles);
+						}
+					}
+
+				}
+				// now loop through invader projectiles
+				for each (var projectile:Projectile in _projectiles)
+				{
+					projectile.move();
+					if (projectile.y > 450)
+					{
+						projectile.parent.removeChild(projectile);
+						_projectiles.splice(_projectiles.indexOf(projectile),1);
+					}
+					else
+					{
+						if(!check_barrier_hit(projectile,_projectiles)){
+						if (checkHit(_def,projectile))
 						{
-							_def.parent.removeChild(_def);
+							hitProjectile(projectile,_projectiles);
+							if (_def.getHit())
+							{
+								_def.parent.removeChild(_def);
+							}
+						}
 						}
 					}
 				}
 			}
 		}
-	}
-	private function checkHit(e:MovieClip,p:Projectile):Boolean
-	{
-		if (e is Hittable)
+		private function checkHit(e:MovieClip,p:Projectile):Boolean
 		{
-			if (p.y <= e.y && p.y > e.y - e.height && p.x - p.width < e.x + e.width && p.x + p.width > e.x)
+			if (e is Hittable)
 			{
-				return true;
+				if (p.y <= e.y && p.y > e.y - e.height && p.x - p.width < e.x + e.width && p.x + p.width > e.x)
+				{
+					return true;
+				}
 			}
+			return false;
 		}
-		return false;
 	}
-}
 }
