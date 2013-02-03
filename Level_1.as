@@ -3,15 +3,6 @@
 
 	public class Level_1 extends Level
 	{
-		public function Level_1()
-		{
-			// constructor code
-		}
-		//public var defender:Defender;
-		// public var startInvaderSpeed = 1.1;
-		// public var invaderSpeedSteps = 0.01;
-		// public var invaderVerticalStep = 10;
-		//public var flyOverChance = 0.10;
 
 		override public function get flyOverInvaders():Array
 		{

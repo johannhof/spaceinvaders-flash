@@ -2,11 +2,17 @@
 {
 	public class Level
 	{
-		public var defender:Defender;
 		public var startInvaderSpeed;
 		public var invaderSpeedSteps;
 		public var invaderVerticalStep;
 		public var flyOverChance;
+
+		public function Level(){
+			startInvaderSpeed = 1.1;
+			invaderSpeedSteps = 0.01;
+			invaderVerticalStep = 10;
+			flyOverChance = 0.10;
+		}
 
 		public function get flyOverInvaders():Array
 		{

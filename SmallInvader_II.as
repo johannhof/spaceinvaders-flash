@@ -16,7 +16,7 @@
 		}
 		
 		override public function shoot():Projectile{
-			var invaderbullet = new Invader_Bullet_BLUE();
+			var invaderbullet = new Invader_Bullet();
 			invaderbullet.x = this.x;
 			invaderbullet.y = this.y;
 			return invaderbullet;
