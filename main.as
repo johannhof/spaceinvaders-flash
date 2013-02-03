@@ -3,6 +3,7 @@
 	import flash.display.MovieClip;
 	import flash.events.KeyboardEvent;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.ui.Keyboard;
 	import flash.utils.Timer;
 	import flash.events.TimerEvent;
@@ -19,9 +20,15 @@
 		private var _invadersMoveRight:Boolean = true;
 		private var _barriers:Array;
 
-		public function main()
+		public function main(){
+			playButton.addEventListener(MouseEvent.CLICK, function(e:Event){
+										gotoAndPlay('gamestart');
+			});
+		}
+	
+		public function init()
 		{
-			_barriers = new Array(new Barrier(75),new Barrier(212),new Barrier(350));
+			_barriers = new Array(new Barrier(75),new Barrier(230),new Barrier(380));
 			addBarriers();
 			_level = new Level_1();
 			_invaders = _level.createInvaders();;
@@ -30,7 +37,7 @@
 			_defProjectiles = new Array();
 			_projectiles = new Array();
 			_invaderSpeed = _level.startInvaderSpeed;
-			_def = new Defender(7);
+			_def = new Defender(10);
 			_def.x = 250;
 			_def.y = 450;
 			addChild(_def);
@@ -66,7 +73,7 @@
 		{
 			for each (var column:Array in _invaders)
 			{
-				if (Math.random() < column[column.length - 1].shootingChance)
+				if (column.length > 0 && Math.random() < column[column.length - 1].shootingChance)
 				{
 					var p:Projectile = column[column.length - 1].shoot();
 					if (p != null)
@@ -125,24 +132,31 @@
 		}
 		private function move_invaders()
 		{
+			var invader:Invader;
 			for each (var column:Array in _invaders)
 			{
-				for each (var invader:Invader in column)
+				if (_invadersMoveRight)
 				{
-					if (_invadersMoveRight)
+					for each (invader in column)
 					{
 						invader.x +=  _invaderSpeed;
 					}
-					else
+				}
+				else
+				{
+					for each (invader in column)
 					{
+
 						invader.x -=  _invaderSpeed;
 					}
-					if ((invader.x > 450 && _invadersMoveRight) || (invader.x < 50 && !_invadersMoveRight))
-					{
-						_invadersMoveRight = ! _invadersMoveRight;
-						jump_invaders();
-					}
 				}
+				if (column.length > 0 && ((column[column.length - 1].x >= 475 && _invadersMoveRight) || (column[column.length - 1].x <= 50 && !_invadersMoveRight)))
+				{
+					_invadersMoveRight = ! _invadersMoveRight;
+					jump_invaders();
+				}
+				
+
 			}
 			_invaderSpeed +=  _level.invaderSpeedSteps;
 		}
@@ -248,8 +262,9 @@
 					else
 					{
 						//else try to hit something
-						if(!check_barrier_hit(def_projectile,_defProjectiles)){
-						check_invader_hit(def_projectile,_defProjectiles);
+						if (! check_barrier_hit(def_projectile,_defProjectiles))
+						{
+							check_invader_hit(def_projectile,_defProjectiles);
 						}
 					}
 
@@ -265,15 +280,16 @@
 					}
 					else
 					{
-						if(!check_barrier_hit(projectile,_projectiles)){
-						if (checkHit(_def,projectile))
+						if (! check_barrier_hit(projectile,_projectiles))
 						{
-							hitProjectile(projectile,_projectiles);
-							if (_def.getHit())
+							if (checkHit(_def,projectile))
 							{
-								_def.parent.removeChild(_def);
+								hitProjectile(projectile,_projectiles);
+								if (_def.getHit())
+								{
+									_def.parent.removeChild(_def);
+								}
 							}
-						}
 						}
 					}
 				}

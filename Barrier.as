@@ -9,13 +9,13 @@
 		public function Barrier(offsetX:int)
 		{
 			_elements = new Array();
-			for (var w = 0; w < 25; w++)
+			for (var w = 0; w < 30; w++)
 			{
 				for (var h = 0; h < 15; h++)
 				{
 					var temp:BarrierElement = new BarrierElement();
 					temp.x = 3 * w + offsetX;
-					temp.y = 3 * h + 350;
+					temp.y = 3 * h + 370;
 					_elements.push(temp);
 					this.addChild(temp);
 				}
