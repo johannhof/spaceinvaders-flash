@@ -1,9 +1,6 @@
 ﻿package  {
-	
 	public class SmallInvader_V extends Invader {
-		
-		private var HP:int;
-		
+				
 		public function SmallInvader_V() {
 			HP = 3;
 		}
@@ -16,11 +13,11 @@
 			return false;
 		}
 		
-		override public function shoot():Projectile{
+		override public function shoot():Array{
 			var invaderbullet = new Invader_Bullet_II();
 			invaderbullet.x = this.x;
 			invaderbullet.y = this.y;
-			return invaderbullet;
+			return new Array(invaderbullet);
 		}
 	}
 	
