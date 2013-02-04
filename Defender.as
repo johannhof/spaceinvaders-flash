@@ -12,6 +12,7 @@
 			this.maxProjectiles = 1;
 		}
 		public function getHit():Boolean {
+			this.gotoAndPlay('hit');
 			_lifes--;
 			return true;
 		}

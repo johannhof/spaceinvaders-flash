@@ -23,9 +23,6 @@
 		private var _defLifeSymbols:Sprite;
 
 		public function main() {
-			playButton.addEventListener(MouseEvent.CLICK, function(e:Event){
-			gotoAndPlay('gamestart');
-			});
 		}
 
 		public function init() {
@@ -37,8 +34,7 @@
 			setup_defender();
 			_defProjectiles = new Array();
 			_projectiles = new Array();
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
-			stage.addEventListener(Event.ENTER_FRAME,moveElements);
+			addEventListener(Event.ENTER_FRAME,moveElements);
 		}
 
 		private function tick(e:Event) {
@@ -46,7 +42,7 @@
 		}
 
 		private function setup_defender() {
-			_def = new Defender_II(10);
+			_def = new Defender(10);
 			_def.x = 250;
 			_def.y = 450;
 			gameContainer.addChild(_def);
@@ -65,8 +61,10 @@
 		}
 
 		private function setup_barriers() {
-			_barriers = new Array(new Barrier(75),new Barrier(230),new Barrier(380));
-			addBarriers();
+			_barriers = new Array(new Barrier(90),new Barrier(225),new Barrier(360));
+			for each (var barrier:Barrier in _barriers) {
+				gameContainer.addChild(barrier);
+			}
 		}
 
 		private function setup_timer() {
@@ -89,13 +87,7 @@
 			}
 
 		}
-
-		private function addBarriers() {
-			for each (var barrier:Barrier in _barriers) {
-				gameContainer.addChild(barrier);
-			}
-		}
-
+		
 		private function addFlyOver(e:Event) {
 			if (_level.flyOverChance > Math.random()) {
 				var invader:Invader = _level.flyOverInvaders[0];
@@ -121,7 +113,7 @@
 			var key:uint = e.keyCode;
 			if (key == Keyboard.LEFT && _def.x > 50) {
 				_def.x -=  _def.speed;
-			} else if (key == Keyboard.RIGHT  && _def.x < stage.stageWidth - 50) {
+			} else if (key == Keyboard.RIGHT  && _def.x < stage.width - 50) {
 				_def.x +=  _def.speed;
 			} else if (key == Keyboard.SPACE) {
 				if (_defProjectiles.length < _def.maxProjectiles) {
@@ -163,8 +155,9 @@
 					_invadersMoveRight = ! _invadersMoveRight;
 					jump_invaders();
 				}
-
-
+				if(column[column.length - 1].y >= 370){
+					game_over();
+				}
 			}
 			_invaderSpeed +=  _level.invaderSpeedSteps;
 		}
