@@ -1,10 +1,7 @@
 ﻿package  {
 	
-	
 	public class BigInvader_I extends Invader {
-		
-		private var HP:int;
-		
+				
 		public function BigInvader_I() {
 			HP = 6;
 		}
@@ -17,11 +14,11 @@
 			return false;
 		}
 		
-		override public function shoot():Projectile{
+		override public function shoot():Array{
 			var invaderbullet = new Invader_Bullet_II();
 			invaderbullet.x = this.x;
 			invaderbullet.y = this.y;
-			return invaderbullet;
+			return new Array(invaderbullet);
 		}
 	}
 	
