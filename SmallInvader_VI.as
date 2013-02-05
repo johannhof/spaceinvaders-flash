@@ -12,11 +12,16 @@
 			return false;
 		}
 		
-		override public function shoot():Array{
-			var invaderbullet = new Invader_Bullet_II_RED();
+		override public function shoot():Array
+		{
+			var invaderbullet = new Invader_Bullet();
+			var invaderbullet2 = new Invader_Bullet();
 			invaderbullet.x = this.x;
 			invaderbullet.y = this.y;
-			return new Array(invaderbullet);
+			invaderbullet2.x = this.x - 1;
+			invaderbullet2.y = this.y;
+			return new Array(invaderbullet, invaderbullet2);
+
 		}
 	}
 	
