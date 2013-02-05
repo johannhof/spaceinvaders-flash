@@ -76,7 +76,7 @@
 		}
 
 		private function setup_level() {
-			_level = new Level_10();
+			_level = new Level_1();
 			_invaderSpeed = _level.startInvaderSpeed;
 			_invaders = _level.createInvaders();
 			if(_flyOverInvaders == null){
