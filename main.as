@@ -10,7 +10,7 @@
 
 	public class main extends MovieClip {
 		private var gameContainer:Sprite;
-		private var _def:Defender;
+		private var _def;
 		private var _defProjectiles:Array;
 		private var _projectiles:Array;
 		private var _invaders:Array;
@@ -21,11 +21,69 @@
 		private var _barriers:Array;
 		private var _timer:Timer;
 		private var _defLifeSymbols:Sprite;
+		private var _levels;
+		private var _defenders;
 
 		public function main() {
 		}
 
+		public function showLevelChoice() {
+			_levels = new Array(new Level_1(),new Level_2(),new Level_3(),new Level_4(),new Level_5(),new Level_6(),new Level_7(),new Level_8(),new Level_9(),new Level_10());
+			for each (var level:Level in _levels) {
+				level.x = 40 * _levels.indexOf(level) + 75;
+				level.y = 50 * (_levels.indexOf(level) % 2) + 100;
+				level.addEventListener(MouseEvent.CLICK, onLevelClick);
+				addChild(level);
+			}
+			_levels[0].dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+		}
+
+		public function hideLevelChoice() {
+			for each (var level:Level in _levels) {
+				removeChild(level);
+			}
+		}
+		
+		public function showDefenderChoice(){
+			_defenders = new Array(new Defender(), new Defender_II(), new Defender_III());
+			for each (var defender:Defender in _defenders) {
+				defender.x = 120 * _defenders.indexOf(defender) + 130;
+				defender.y = 370;
+				defender.addEventListener(MouseEvent.CLICK, onDefenderClick);
+				addChild(defender);
+			}
+			_defenders[0].dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+		}
+		
+		public function hideDefenderChoice(){
+			for each (var defender:Defender in _defenders) {
+				removeChild(defender);
+			}
+		}
+		
+		private function onDefenderClick(e:MouseEvent){
+			for each (var defender:Defender in _defenders) {
+				defender.gotoAndStop(1);
+			}
+			if (e.currentTarget is Defender) {
+				e.currentTarget.gotoAndStop('selected');
+				_def = e.currentTarget;
+			}
+		}
+
+		private function onLevelClick(e:MouseEvent) {
+			for each (var level:Level in _levels) {
+				level.gotoAndStop(1);
+			}
+			if (e.currentTarget is Level) {
+				e.currentTarget.gotoAndStop('selected');
+				_level = e.currentTarget;
+			}
+		}
+
 		public function init() {
+			hideLevelChoice();
+			hideDefenderChoice()
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			stage.focus = this;
 			gameContainer = new Sprite();
@@ -43,8 +101,8 @@
 			time.text = _timer.currentCount.toString();
 		}
 
-		private function setup_defender() {			
-		_def = new Defender(10);
+		private function setup_defender() {
+			_def.gotoAndStop(1);
 			_def.x = 250;
 			_def.y = 450;
 			gameContainer.addChild(_def);
@@ -77,21 +135,19 @@
 			_timer.start();
 		}
 
-		private function setup_level() {
-			_level = new Level_1();
+		public function setup_level() {
 			_invaderSpeed = _level.startInvaderSpeed;
 			_invaders = _level.createInvaders();
-			if(_flyOverInvaders == null){
-			_flyOverInvaders = new Array();
+			if (_flyOverInvaders == null) {
+				_flyOverInvaders = new Array();
 			}
 			for each (var column:Array in _invaders) {
 				for each (var invader:Invader in column) {
 					gameContainer.addChild(invader);
 				}
 			}
-
 		}
-		
+
 		private function addFlyOver(e:Event) {
 			if (_level.flyOverChance > Math.random()) {
 				var invader:Invader = _level.flyOverInvaders[0];
@@ -159,7 +215,7 @@
 					_invadersMoveRight = ! _invadersMoveRight;
 					jump_invaders();
 				}
-				if(column[column.length - 1].y >= 370){
+				if (column[column.length - 1].y >= 370) {
 					game_over();
 				}
 			}
@@ -288,6 +344,10 @@
 	private function remove_element(element:Sprite, container:Array) {
 		element.parent.removeChild(element);
 		container.splice(container.indexOf(element),1);
+	}
+
+	public function set level(newlevel:Level) {
+		_level = newlevel;
 	}
 }
 }

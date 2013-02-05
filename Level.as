@@ -1,32 +1,28 @@
-﻿package 
-{
-	public class Level
-	{
+﻿package {
+	import flash.display.MovieClip;
+
+	public class Level extends MovieClip {
 		public var startInvaderSpeed;
 		public var invaderSpeedSteps;
 		public var invaderVerticalStep;
 		public var flyOverChance;
 
-		public function Level(){
+		public function Level() {
 			startInvaderSpeed = 1.1;
 			invaderSpeedSteps = 0.01;
 			invaderVerticalStep = 10;
 			flyOverChance = 0.10;
 		}
 
-		public function get flyOverInvaders():Array
-		{
+		public function get flyOverInvaders():Array {
 			return new Array(new SmallInvader_V());
 		}
 
-		public function createInvaders():Array
-		{
+		public function createInvaders():Array {
 			var invaders:Array = new Array();
-			for (var column = 0; column < 6; column++)
-			{
+			for (var column = 0; column < 6; column++) {
 				invaders.push(new Array());
-				for (var i = 0; i < 4; i++)
-				{
+				for (var i = 0; i < 4; i++) {
 					var test:SmallInvader_I = new SmallInvader_I();
 					test.x = column * 50 + 100;
 					test.y = i * 50 + 100;

@@ -1,22 +1,15 @@
-﻿package 
-{
+﻿package {
+	public class Level_1 extends Level {
 
-	public class Level_1 extends Level
-	{
-
-		override public function get flyOverInvaders():Array
-		{
+		override public function get flyOverInvaders():Array {
 			return new Array(new SmallInvader_IV());
 		}
 
-		override public function createInvaders():Array
-		{
+		override public function createInvaders():Array {
 			var invaders:Array = new Array();
-			for (var column = 0; column < 6; column++)
-			{
+			for (var column = 0; column < 6; column++) {
 				invaders.push(new Array());
-				for (var i = 0; i < 4; i++)
-				{
+				for (var i = 0; i < 4; i++) {
 					var invader:SmallInvader_I = new SmallInvader_I();
 					invader.x = column * 50 + 100;
 					invader.y = i * 50 + 100;
