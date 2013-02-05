@@ -79,7 +79,9 @@
 			_level = new Level_1();
 			_invaderSpeed = _level.startInvaderSpeed;
 			_invaders = _level.createInvaders();
+			if(_flyOverInvaders == null){
 			_flyOverInvaders = new Array();
+			}
 			for each (var column:Array in _invaders) {
 				for each (var invader:Invader in column) {
 					gameContainer.addChild(invader);
