@@ -267,6 +267,8 @@
 					hitProjectile(projectile,container);
 					if (flyInvader.getHit()) {
 						remove_element(flyInvader,_flyOverInvaders);
+						_def.lifes = _def.lifes + 1;
+						update_lifes();
 					}
 					return true;
 				}
@@ -339,6 +341,7 @@
 		_timer.stop();
 		removeChild(gameContainer);
 		gotoAndStop('gameover');
+		score.text = "Score: " + _timer.currentCount.toString();
 	}
 
 	private function remove_element(element:Sprite, container:Array) {

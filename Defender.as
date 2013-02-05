@@ -28,6 +28,10 @@
 		public function get lifes():int {
 			return _lifes;
 		}
+		
+		public function set lifes(life:int){
+			this._lifes = life;
+		}
 
 		public function set speed(speed:int) {
 			this._speed = speed;
