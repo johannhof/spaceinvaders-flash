@@ -11,7 +11,7 @@
 
 		override public function get flyOverInvaders():Array
 		{
-			return new Array(new SmallInvader_V());
+			return new Array(new SmallInvader_VI());
 		}
 		override public function createInvaders():Array
 		{
@@ -76,6 +76,13 @@
 			test10.x = test10column * 50 + 100;
 			test10.y = test10row * 50 + 100;
 			invaders[test10column][test10row] = test10;
+			
+			var test12:SmallInvader_VI = new SmallInvader_VI();
+			var test12column = 2;
+			var test12row = 3;
+			test12.x = test12column * 50 + 100;
+			test12.y = test12row * 50 + 100;
+			invaders[test12column][test12row] = test12;
 
 			var test8:BigInvader_I = new BigInvader_I();
 			var test8column = 1;
