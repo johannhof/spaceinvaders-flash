@@ -5,7 +5,7 @@
 
 		public function SmallInvader_IV()
 		{
-			HP = 3;
+			HP = 1;
 		}
 
 		override public function getHit():Boolean

@@ -1,7 +1,7 @@
 ﻿﻿package  {
 	public class SmallInvader_VI extends Invader {		
 		public function SmallInvader_VI() {
-			HP = 3;
+			HP = 1;
 		}
 		
 		override public function getHit():Boolean{
