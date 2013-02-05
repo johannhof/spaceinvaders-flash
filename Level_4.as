@@ -10,7 +10,7 @@
 		}
 		override public function get flyOverInvaders():Array
 		{
-			return new Array(new SmallInvader_V());
+			return new Array(new SmallInvader_IV());
 		}
 
 
