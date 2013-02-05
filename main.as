@@ -26,6 +26,8 @@
 		}
 
 		public function init() {
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
+			stage.focus = this;
 			gameContainer = new Sprite();
 			addChild(gameContainer);
 			setup_level();
@@ -41,8 +43,8 @@
 			time.text = _timer.currentCount.toString();
 		}
 
-		private function setup_defender() {
-			_def = new Defender(10);
+		private function setup_defender() {			
+		_def = new Defender(10);
 			_def.x = 250;
 			_def.y = 450;
 			gameContainer.addChild(_def);
