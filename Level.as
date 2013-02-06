@@ -6,6 +6,7 @@
 		public var invaderSpeedSteps;
 		public var invaderVerticalStep;
 		public var flyOverChance;
+		public var id;
 
 		public function Level() {
 			startInvaderSpeed = 1.1;

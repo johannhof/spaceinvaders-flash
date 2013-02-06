@@ -1,6 +1,10 @@
 ﻿package {
 	public class Level_2 extends Level {
 
+		public function Level_2() {
+			this.id = "Level_2";
+		}
+
 		override public function get flyOverInvaders():Array {
 			return new Array(new SmallInvader_V());
 		}

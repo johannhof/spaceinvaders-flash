@@ -7,6 +7,10 @@
 	import flash.utils.Timer;
 	import flash.events.TimerEvent;
 	import flash.display.Sprite;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
+	import flash.net.FileReference;
+	import flash.errors.IOError;
 
 	public class main extends MovieClip {
 		private var gameContainer:Sprite;
@@ -15,7 +19,7 @@
 		private var _projectiles:Array;
 		private var _invaders:Array;
 		private var _flyOverInvaders:Array;
-		private var _level;
+		private var _currentLevel;
 		private var _invaderSpeed;
 		private var _invadersMoveRight:Boolean = true;
 		private var _barriers:Array;
@@ -43,8 +47,8 @@
 				removeChild(level);
 			}
 		}
-		
-		public function showDefenderChoice(){
+
+		public function showDefenderChoice() {
 			_defenders = new Array(new Defender(), new Defender_II(), new Defender_III());
 			for each (var defender:Defender in _defenders) {
 				defender.x = 120 * _defenders.indexOf(defender) + 130;
@@ -54,14 +58,14 @@
 			}
 			_defenders[0].dispatchEvent(new MouseEvent(MouseEvent.CLICK));
 		}
-		
-		public function hideDefenderChoice(){
+
+		public function hideDefenderChoice() {
 			for each (var defender:Defender in _defenders) {
 				removeChild(defender);
 			}
 		}
-		
-		private function onDefenderClick(e:MouseEvent){
+
+		private function onDefenderClick(e:MouseEvent) {
 			for each (var defender:Defender in _defenders) {
 				defender.gotoAndStop(1);
 			}
@@ -77,13 +81,13 @@
 			}
 			if (e.currentTarget is Level) {
 				e.currentTarget.gotoAndStop('selected');
-				_level = e.currentTarget;
+				_currentLevel = e.currentTarget;
 			}
 		}
 
 		public function init() {
 			hideLevelChoice();
-			hideDefenderChoice()
+			hideDefenderChoice();
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			stage.focus = this;
 			gameContainer = new Sprite();
@@ -136,8 +140,8 @@
 		}
 
 		public function setup_level() {
-			_invaderSpeed = _level.startInvaderSpeed;
-			_invaders = _level.createInvaders();
+			_invaderSpeed = _currentLevel.startInvaderSpeed;
+			_invaders = _currentLevel.createInvaders();
 			if (_flyOverInvaders == null) {
 				_flyOverInvaders = new Array();
 			}
@@ -149,8 +153,8 @@
 		}
 
 		private function addFlyOver(e:Event) {
-			if (_level.flyOverChance > Math.random()) {
-				var invader:Invader = _level.flyOverInvaders[0];
+			if (_currentLevel.flyOverChance > Math.random()) {
+				var invader:Invader = _currentLevel.flyOverInvaders[0];
 				invader.x = 0;
 				invader.y = 50;
 				_flyOverInvaders.push(invader);
@@ -219,12 +223,12 @@
 					game_over();
 				}
 			}
-			_invaderSpeed +=  _level.invaderSpeedSteps;
+			_invaderSpeed +=  _currentLevel.invaderSpeedSteps;
 		}
 		private function jump_invaders() {
 			for each (var column:Array in _invaders) {
 				for each (var invader:Invader in column) {
-					invader.y +=  _level.invaderVerticalStep;
+					invader.y +=  _currentLevel.invaderVerticalStep;
 				}
 			}
 		}
@@ -292,34 +296,35 @@
 		}
 
 		private function move_projectiles() {
-			for(var i = 0; i < 12; i++){
-			for each (var def_projectile:Projectile in _defProjectiles) {
-				def_projectile.move();
-				//if projectile is out of the screen;
-				if (def_projectile.y < 0) {
-					remove_element(def_projectile,_defProjectiles);
-				} else {
-					//else try to hit something
-					if (! check_barrier_hit(def_projectile,_defProjectiles)) {
-						check_invader_hit(def_projectile,_defProjectiles);
+			for (var i = 0; i < 12; i++) {
+				for each (var def_projectile:Projectile in _defProjectiles) {
+					def_projectile.move();
+					//if projectile is out of the screen;
+					if (def_projectile.y < 0) {
+						remove_element(def_projectile,_defProjectiles);
+					} else {
+						//else try to hit something
+						if (! check_barrier_hit(def_projectile,_defProjectiles)) {
+							check_invader_hit(def_projectile,_defProjectiles);
+						}
 					}
-				}
 
-			}
-			// now loop through invader projectiles
-			for each (var projectile:Projectile in _projectiles) {
-				projectile.move();
-				if (projectile.y > 450) {
-					remove_element(projectile,_projectiles);
-				} else {
-					if (! check_barrier_hit(projectile,_projectiles)) {
-						if (checkHit(_def,projectile)) {
-							hitProjectile(projectile,_projectiles);
-							if (_def.getHit()) {
-								gameContainer.removeChild(_defLifeSymbols);
-								update_lifes();
-								if (_def.lifes <= 0) {
-									game_over();
+				}
+				// now loop through invader projectiles
+				for each (var projectile:Projectile in _projectiles) {
+					projectile.move();
+					if (projectile.y > 450) {
+						remove_element(projectile,_projectiles);
+					} else {
+						if (! check_barrier_hit(projectile,_projectiles)) {
+							if (checkHit(_def,projectile)) {
+								hitProjectile(projectile,_projectiles);
+								if (_def.getHit()) {
+									gameContainer.removeChild(_defLifeSymbols);
+									update_lifes();
+									if (_def.lifes <= 0) {
+										game_over();
+									}
 								}
 							}
 						}
@@ -327,30 +332,91 @@
 				}
 			}
 		}
-	}
-	private function checkHit(e:MovieClip,p:Projectile):Boolean {
-		if (e is Hittable) {
-			if (p.y <= e.y && p.y > e.y - e.height && p.x - p.width < e.x + e.width && p.x + p.width > e.x) {
-				return true;
+		private function checkHit(e:MovieClip,p:Projectile):Boolean {
+			if (e is Hittable) {
+				if (p.y <= e.y && p.y > e.y - e.height && p.x - p.width < e.x + e.width && p.x + p.width > e.x) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		private function game_over() {
+			removeEventListener(Event.ENTER_FRAME,moveElements);
+			gotoAndStop('gameover');
+			_timer.stop();
+			var myXML:XML  = <HIGHSCORE>
+			<LEVEL ID="Level_1">
+			</LEVEL>
+			<LEVEL ID="Level_2">
+			</LEVEL>
+			<LEVEL ID="Level_3">
+			</LEVEL>
+			<LEVEL ID="Level_4">
+			</LEVEL>
+			<LEVEL ID="Level_5">
+			</LEVEL>
+			<LEVEL ID="Level_6">
+			</LEVEL>
+			<LEVEL ID="Level_7">
+			</LEVEL>
+			<LEVEL ID="Level_8">
+			</LEVEL>
+			<LEVEL ID="Level_9">
+			</LEVEL>
+			<LEVEL ID="Level_10">
+			</LEVEL>
+			</HIGHSCORE>;
+			try {
+				var myLoader:URLLoader = new URLLoader();
+				myLoader.load(new URLRequest("highscores.xml"));
+				myLoader.addEventListener(Event.COMPLETE, processXML);
+			} catch (e:Error) {
+				trace("File does not exist");
+			}
+			function processXML(e:Event):void {
+				myXML = new XML(e.target.data);
+			}
+			saveButton.addEventListener(MouseEvent.CLICK,saveScore);
+			function saveScore(e:Event):void {
+				var scores = myXML.LEVEL.(@ID == _currentLevel.id)[0].SCORE;
+				var lowestScore:int = 1000000;
+				if (scores.POINTS.length < 5) {
+					trace(scores.POINTS.length);
+					myXML.LEVEL.(@ID == _currentLevel.id)[0].prependChild(<SCORE><NAME> {nameText.text} </NAME><POINTS> {_timer.currentCount} </POINTS></SCORE>);
+				} else {
+					for each (var score:int in scores.POINTS) {
+						if (score < lowestScore) {
+							lowestScore = score;
+						}
+					}
+					if (_timer.currentCount > lowestScore) {
+						myXML.LEVEL.(@ID == _currentLevel.id)[0].SCORE.(POINTS == lowestScore)[0].replace(0,<NAME> {nameText.text} </NAME>);
+						myXML.LEVEL.(@ID == _currentLevel.id)[0].SCORE.(POINTS == lowestScore)[0].replace(1,<POINTS> {_timer.currentCount} </POINTS>);
+					}
+				}
+				var f:FileReference = new FileReference  ;
+				f.save( myXML, "highscores.xml" );
+			}
+		removeChild(gameContainer);
+		score.text = "Score: " + _timer.currentCount.toString();
+		highscoreButton.addEventListener(MouseEvent.CLICK,showHighscore);
+		function showHighscore(e:Event) {
+			gotoAndStop('highscores');
+			levelText.text = _currentLevel.id;
+			var scores = myXML.LEVEL.(@ID == _currentLevel.id)[0].SCORE;
+			for each (var score in scores) {
+				highscoreText.appendText(score.NAME + " " + score.POINTS + "\n");
 			}
 		}
-		return false;
 	}
-
-	private function game_over() {
-		_timer.stop();
-		removeChild(gameContainer);
-		gotoAndStop('gameover');
-		score.text = "Score: " + _timer.currentCount.toString();
-	}
-
-	private function remove_element(element:Sprite, container:Array) {
+		private function remove_element(element:Sprite, container:Array) {
 		element.parent.removeChild(element);
 		container.splice(container.indexOf(element),1);
 	}
 
 	public function set level(newlevel:Level) {
-		_level = newlevel;
+		_currentLevel = newlevel;
 	}
 }
 }

@@ -1,23 +1,19 @@
-﻿package  {
-	
-	public class Level_7 extends Level{
+﻿package {
+
+	public class Level_7 extends Level {
 
 		public function Level_7() {
-			// constructor code
+			this.id = "Level_7";
 		}
-		override public function get flyOverInvaders():Array
-		{
+		override public function get flyOverInvaders():Array {
 			return new Array(new SmallInvader_V());
 		}
-		
-		override public function createInvaders():Array
-		{
+
+		override public function createInvaders():Array {
 			var invaders:Array = new Array();
-			for (var column = 0; column < 7; column++)
-			{
+			for (var column = 0; column < 7; column++) {
 				invaders.push(new Array());
-				for (var i = 0; i < 4; i++)
-				{
+				for (var i = 0; i < 4; i++) {
 					var invader:SmallInvader_III = new SmallInvader_III();
 					invader.x = column * 50 + 100;
 					invader.y = i * 50 + 100;
@@ -65,28 +61,28 @@
 			test7.x = test7column * 50 + 90;
 			test7.y = test7row * 50 + 100;
 			invaders[test7column][test7row] = test7;
-			
+
 			var test8:BigInvader_I = new BigInvader_I();
 			var test8column = 2;
 			var test8row = 0;
 			test8.x = test8column * 50 + 85;
 			test8.y = test8row * 50 + 110;
 			invaders[test8column][test8row] = test8;
-			
+
 			var test9:BigInvader_I = new BigInvader_I();
 			var test9column = 2;
 			var test9row = 3;
 			test9.x = test9column * 50 + 85;
 			test9.y = test9row * 50 + 110;
 			invaders[test9column][test9row] = test9;
-			
+
 			var test10:BigInvader_I = new BigInvader_I();
 			var test10column = 4;
 			var test10row = 0;
 			test10.x = test10column * 50 + 85;
 			test10.y = test10row * 50 + 110;
 			invaders[test10column][test10row] = test10;
-			
+
 			var test11:BigInvader_I = new BigInvader_I();
 			var test11column = 4;
 			var test11row = 3;
