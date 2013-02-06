@@ -1,26 +1,12 @@
-﻿package 
-{
+﻿package {
 
-	public class BigInvader_III extends Invader
-	{
+	public class BigInvader_III extends Invader {
 
-		public function BigInvader_III()
-		{
+		public function BigInvader_III() {
 			HP = 100;
 		}
 
-		override public function getHit():Boolean
-		{
-			HP--;
-			if (HP == 0)
-			{
-				return true;
-			}
-			return false;
-		}
-
-		override public function shoot():Array
-		{
+		override public function shoot():Array {
 			var invaderbullet = new Invader_Bullet_RED();
 			var invaderbullet2 = new Invader_Bullet_RED();
 			invaderbullet.x = this.x + 20;

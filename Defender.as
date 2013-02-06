@@ -5,6 +5,8 @@
 		protected var _speed:int;
 		protected var _maxProjectiles:int;
 		protected var _lifes;
+		protected var shootSound:ShootSound = new ShootSound();
+		protected var explosionSound:ExplosionSound = new ExplosionSound();
 
 		public function Defender(speed:int = 7) {
 			this._speed = speed;
@@ -12,6 +14,7 @@
 			this.maxProjectiles = 1;
 		}
 		public function getHit():Boolean {
+			explosionSound.play();
 			this.gotoAndPlay('hit');
 			_lifes--;
 			return true;
@@ -40,6 +43,7 @@
 			return _speed;
 		}
 		public function shoot():Array {
+			shootSound.play();
 			var bullet:Bullet =  new Bullet();
 			bullet.x = this.x + this.width / 2;
 			bullet.y = this.y - this.height;

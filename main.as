@@ -11,6 +11,7 @@
 	import flash.net.URLRequest;
 	import flash.net.FileReference;
 	import flash.errors.IOError;
+	import flash.media.SoundChannel;
 
 	public class main extends MovieClip {
 		private var gameContainer:Sprite;
@@ -27,8 +28,18 @@
 		private var _defLifeSymbols:Sprite;
 		private var _levels;
 		private var _defenders;
+		private var battleSound:BattleSound = new BattleSound();
+		private var themeSound:ThemeSound = new ThemeSound();
+		private var soundChannel:SoundChannel = new SoundChannel;
 
 		public function main() {
+			soundChannel = themeSound.play();
+			soundChannel.addEventListener(Event.SOUND_COMPLETE,playTheme);
+		}
+		
+		public function playTheme(e:Event){
+			soundChannel = themeSound.play();
+			soundChannel.addEventListener(Event.SOUND_COMPLETE,playTheme);
 		}
 
 		public function showLevelChoice() {
@@ -140,6 +151,8 @@
 		}
 
 		public function setup_level() {
+			soundChannel.stop();
+			soundChannel = battleSound.play();
 			_invaderSpeed = _currentLevel.startInvaderSpeed;
 			_invaders = _currentLevel.createInvaders();
 			if (_flyOverInvaders == null) {
@@ -342,6 +355,7 @@
 		}
 
 		private function game_over() {
+			soundChannel.stop();
 			removeEventListener(Event.ENTER_FRAME,moveElements);
 			gotoAndStop('gameover');
 			_timer.stop();

@@ -7,6 +7,7 @@
 		}
 
 		override public function shoot():Array {
+			shootSound.play();
 			var bullet:Bullet = new Bullet();
 			bullet.x = this.x + this.width / 5;
 			bullet.y = this.y - 20;
